@@ -17,6 +17,7 @@ import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute'
 
 // Services
 import * as authService from '../services/authService'
+import * as catService from '../services/cats'
 
 // Image Assets
 import CoolCat from '../assets/cool-cat.svg'
@@ -38,15 +39,34 @@ function App() {
     CatInBox, TeaCupCat,
   ]
 
-  const addCat = async (catData) => {}
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await catService.getAll()
+      setCats(data)
+    }
+    fetchData()
+  },[])
+
+  const addCat = async (catData) => {
+    const cat = await catService.create(catData)
+    setCats([...cats, cat])
+  }
 
   const addToy = async (toyData) => {}
 
-  const updateCat = async (catData) => {}
+  const updateCat = async (catData) => {
+    const updatedCat = await catService.update(catData)
+    setCats(cats.map((cat) => (
+      cat.id === updatedCat.id ? updatedCat : cat
+    )))
+  }
 
   const updateToy = async (toyData) => {}
 
-  const deleteCat = async (id) => {}
+  const deleteCat = async (id) => {
+    await catService.deleteOne(id)
+    setCats(cats.filter(cat => cat.id !== parseInt(id)))
+  }
 
   const deleteToy = async (id) => {}
 
