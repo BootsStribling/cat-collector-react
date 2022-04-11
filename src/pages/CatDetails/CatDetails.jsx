@@ -9,7 +9,6 @@ import { getOne, assocToy } from '../../services/cats'
 import Feedings from './components/Feedings'
 import CatActions from './components/CatActions'
 import ToyCollection from './components/ToyCollection'
-import { getOne } from '../../services/cats'
 
 const CatDetails = ({ catImages, user }) => {
   const { id } = useParams()
@@ -17,7 +16,13 @@ const CatDetails = ({ catImages, user }) => {
   const [availableToys, setAvailableToys] = useState([])
   const idx = Math.floor(Math.random() * (catImages.length))
 
-  const addToCollection = async (e) => {}
+  const addToCollection = async (e) => {
+    e.preventDefault()
+    const toyId = parseInt(e.target.id)
+    const updatedCat = await assocToy(cat.id, toyId)
+    setAvailableToys(availableToys.filter(toy => toyId !== toy.id))
+    setCat({...updatedCat, fed: cat.fed})
+  }
 
   useEffect(() => {
     const fetchOne = async () => {
